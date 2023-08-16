@@ -10,7 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@CrossOrigin
+@CrossOrigin("http://localhost:5173")
 @RequestMapping("api/user")
 public class EmployeeController {
 
@@ -28,11 +28,10 @@ public class EmployeeController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> loginUser(@RequestBody LoginDto loginDto){
-    ///    System.out.println(loginDto.g);
-        LoginResponse loginResponse=userService.loginUser(loginDto);
+    public ResponseEntity<?> loginUser(@RequestBody LoginDto loginDto) {
+        ///    System.out.println(loginDto.g);
+        LoginResponse loginResponse = userService.loginUser(loginDto);
         return ResponseEntity.ok(loginResponse);
     }
-
 
 }
