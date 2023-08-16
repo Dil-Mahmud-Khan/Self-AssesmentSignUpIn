@@ -23,7 +23,6 @@ public class EmployeeController {
 
     @PostMapping("/save")
     public String saveEmployee(@RequestBody UserDto userDto){
-        System.out.println(userDto.getUserName());
         return userService.addUser(userDto);
     }
 
