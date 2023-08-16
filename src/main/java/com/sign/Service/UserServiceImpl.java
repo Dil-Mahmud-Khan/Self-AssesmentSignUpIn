@@ -52,7 +52,7 @@ public class UserServiceImpl implements  UserService {
                 return new LoginResponse("password Not Match", false);
             }
         }else {
-            return new LoginResponse("Email not exits", false);
+            return new LoginResponse("Email not exits!", false);
         }
 
     }
