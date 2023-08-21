@@ -32,13 +32,14 @@ public class UserServiceImpl implements  UserService {
     private PasswordEncoder passwordEncoder;
 
     @Override
-    public String addUser(UserDto userDto) {
-       User user=new User(
+    public UserDto addUser(UserDto userDto) {
+       User user=new User(userDto.getUserId(),
                userDto.getUserName(),
-               userDto.getEmail()
-       );
-       userRepository.save(user);
-       return "inserted";
+               userDto.getEmail(),
+               userDto.getPassword());
+        User save = userRepository.save(user);
+        return userDto;
+
     }
 
     @Override

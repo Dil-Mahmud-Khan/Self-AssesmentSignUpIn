@@ -6,6 +6,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.*;
+import org.springframework.web.bind.annotation.RequestBody;
 
 @Entity
 @Setter
@@ -17,10 +18,11 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
-    private String name;
+    private int userId;
+    private String userName;
     private String email;
     private String password;
+
 
 
 }
