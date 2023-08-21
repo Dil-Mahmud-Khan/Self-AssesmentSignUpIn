@@ -1,12 +1,10 @@
 package com.sign.model;
 
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.*;
-import org.springframework.web.bind.annotation.RequestBody;
 
 @Entity
 @Setter
@@ -24,7 +22,5 @@ public class User {
     private String password;
     private String role;
     private boolean enabled;
-
-
 
 }

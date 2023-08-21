@@ -23,7 +23,6 @@ public class UserServiceImpl implements  UserService {
     private UserRepository userRepository;
     private String username;
 
-
     @Override
     public UserDto addUser(UserDto userDto) {
        User user=new User(userDto.getUserId(),
@@ -54,7 +53,7 @@ public class UserServiceImpl implements  UserService {
         return customerUserDetails;
     }
 
-    //   @Override
+//       @Override
 //    public LoginResponse loginUser(LoginDto loginDto) {
 //        String msg = "";
 //        User user1 = userRepository.findByEmail(loginDto.getEmail());
@@ -78,7 +77,5 @@ public class UserServiceImpl implements  UserService {
 //        }
 //
 //    }
-
-
 
 }

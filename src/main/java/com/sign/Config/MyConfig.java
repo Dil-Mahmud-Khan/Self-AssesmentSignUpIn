@@ -16,7 +16,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 
 @Configuration
 @EnableWebSecurity
-public class MyConfig extends WebSecurityConfiguration{
+public class MyConfig extends WebSecurityConfiguration {
 
     @Bean
     public UserDetailsService getUserDetailService(){
@@ -38,14 +38,19 @@ public class MyConfig extends WebSecurityConfiguration{
         return daoAuthenticationProvider;
     }
 
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+
+    protected void configure(AuthenticationManagerBuilder auth)  throws Exception {
         auth.authenticationProvider(authenticationProvider());
     }
 
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                .antMatchers("/admin/**"). hasRole("ADMIN")
-                .antMatchers("user/**").hasRole("USER")
-                .antMatchers("/**").permitAll().and().formLogin().and().csrf().disable;
+                .dispatcherTypeMatchers(HttpMethod.valueOf("/admin/**")). hasRole("ADMIN")
+                .dispatcherTypeMatchers(HttpMethod.valueOf("user/**")).hasRole("USER")
+                .dispatcherTypeMatchers(HttpMethod.valueOf("/**")).permitAll();
+//                .and().formLogin()
+//                .loginPage("/login")
+//                .and().csrf().disable();
     }
+
 }
