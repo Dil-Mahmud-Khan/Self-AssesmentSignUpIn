@@ -1,5 +1,6 @@
 package com.sign.Service;
 
+import com.sign.Config.CustomerUserDetails;
 import com.sign.Dto.LoginDto;
 import com.sign.Dto.UserDto;
 import com.sign.Repository.UserRepository;
@@ -20,23 +21,17 @@ public class UserServiceImpl implements  UserService {
 
     @Autowired
     private UserRepository userRepository;
+    private String username;
 
-
-    @Bean
-    public BCryptPasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
 
     @Override
     public UserDto addUser(UserDto userDto) {
        User user=new User(userDto.getUserId(),
                userDto.getUserName(),
                userDto.getEmail(),
-               userDto.getPassword());
+               userDto.getPassword(),
+               userDto.getRole(),
+               userDto.isEnabled());
         User save = userRepository.save(user);
         return userDto;
 
@@ -44,36 +39,46 @@ public class UserServiceImpl implements  UserService {
 
     @Override
     public LoginResponse loginUser(LoginDto loginDto) {
-        String msg = "";
-        User user1 = userRepository.findByEmail(loginDto.getEmail());
-        if (user1 != null) {
-            String password = loginDto.getPassword();
-            String encodedPassword = user1.getPassword();
-            Boolean isPwdRight = passwordEncoder.matches(password, encodedPassword);
-            if (isPwdRight) {
-                Optional<User> user = userRepository.findOneByEmailAndPassword(loginDto.getEmail(), encodedPassword);
-                if (user.isPresent()) {
-                    return new LoginResponse("Login Success", true);
-                } else {
-                    return new LoginResponse("Login Failed", false);
-                }
-            } else {
-
-                return new LoginResponse("password Not Match", false);
-            }
-        }else {
-            return new LoginResponse("Email not exits!!", false);
-        }
-
+        return null;
     }
-
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user=userRepository.findByEmail((username));
-        if(user==null){
-            throw new UsernameNotFoundException("Invalid Username or Password");
+        UserDto user1= userRepository.getUsersByUserName(username);
+
+        if(user1==null){
+            throw  new UsernameNotFoundException("Could not found user!!");
         }
-        return new org.springframework.security.core.userdetails.User (user.getEmail(),user.getPassword(),null);
+        CustomerUserDetails customerUserDetails=new CustomerUserDetails(user1);
+
+        return customerUserDetails;
     }
+
+    //   @Override
+//    public LoginResponse loginUser(LoginDto loginDto) {
+//        String msg = "";
+//        User user1 = userRepository.findByEmail(loginDto.getEmail());
+//        if (user1 != null) {
+//            String password = loginDto.getPassword();
+//            String encodedPassword = user1.getPassword();
+//            Boolean isPwdRight = passwordEncoder.matches(password, encodedPassword);
+//            if (isPwdRight) {
+//                Optional<User> user = userRepository.findOneByEmailAndPassword(loginDto.getEmail(), encodedPassword);
+//                if (user.isPresent()) {
+//                    return new LoginResponse("Login Success", true);
+//                } else {
+//                    return new LoginResponse("Login Failed", false);
+//                }
+//            } else {
+//
+//                return new LoginResponse("password Not Match", false);
+//            }
+//        }else {
+//            return new LoginResponse("Email not exits!!", false);
+//        }
+//
+//    }
+
+
+
 }

@@ -9,6 +9,7 @@ import com.sign.Service.UserService;
 import com.sign.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -16,6 +17,8 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("api/user")
 public class EmployeeController {
 
+    @Autowired
+    private BCryptPasswordEncoder passwordEncoder;
     @Autowired
     private UserRepository userRepository;
 
@@ -30,6 +33,10 @@ public class EmployeeController {
     @PostMapping("/save")
     public UserDto saveEmployee(@RequestBody UserDto userDto){
         UserDto save1 = this.userService.addUser(userDto);
+
+        userDto.setRole("ROLE_USER");
+        userDto.setEnabled(true);
+        userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));
 
         return save1;
     }
