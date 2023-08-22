@@ -28,7 +28,6 @@ public class EmployeeController {
 
     @PostMapping("/login")
     public ResponseEntity<?> loginUser(@RequestBody LoginDto loginDto) {
-        ///    System.out.println(loginDto.g);
         LoginResponse loginResponse = userService.loginUser(loginDto);
         return ResponseEntity.ok(loginResponse);
     }
