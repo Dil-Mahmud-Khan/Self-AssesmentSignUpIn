@@ -2,7 +2,6 @@ package com.sign.Dto;
 
 
 import lombok.*;
-import org.springframework.stereotype.Service;
 
 @Setter
 @Getter
@@ -14,5 +13,7 @@ public class UserDto {
     private String email;
     private String password;
     private boolean status;
+    private String salt;
+
 }
 
