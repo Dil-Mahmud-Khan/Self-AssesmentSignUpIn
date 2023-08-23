@@ -3,6 +3,8 @@ package com.sign.Dto;
 
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 @Setter
 @Getter
 @NoArgsConstructor
@@ -14,6 +16,7 @@ public class UserDto {
     private String password;
     private boolean status;
     private String salt;
-
+    private LocalDateTime registrationDatetime;
+    private LoginInfo loginInfo;
 }
 

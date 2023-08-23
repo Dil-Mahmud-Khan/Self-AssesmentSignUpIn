@@ -1,15 +1,18 @@
 package com.sign.Service;
 
 import com.sign.Dto.LoginDto;
+import com.sign.Dto.LoginInfo;
 import com.sign.Dto.UserDto;
+import com.sign.Repository.LoginRepository;
 import com.sign.Repository.UserRepository;
 import com.sign.Response.LoginResponse;
 import com.sign.model.User;
+import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
+import java.time.LocalDateTime;
 import java.util.Base64;
 
 @Service
@@ -18,6 +21,8 @@ public class UserServiceImpl implements  UserService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private LoginRepository loginRepository;
 
     private static final String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
     private static final SecureRandom RANDOM = new SecureRandom();
@@ -34,42 +39,8 @@ public class UserServiceImpl implements  UserService {
         return randomString.toString();
     }
         String randomString = generateRandomString(16);
-
     private static final String PEPPER = generateRandomString(16);
 
-    @Override
-    public String addUser(UserDto userDto) {
-        String salt = generateSalt();
-        String hashedPassword = hashPassword(userDto.getPassword(), salt, PEPPER);
-
-        User user = new User(
-                userDto.getUserId(),
-                userDto.getUserName(),
-                userDto.getEmail(),
-                hashedPassword,
-                userDto.isStatus(),
-                salt);
-
-        userRepository.save(user);
-        return "Registration successful!";
-    }
-
-
-    @Override
-    public LoginResponse loginUser(LoginDto loginDto) {
-        User user = userRepository.findByEmail(loginDto.getEmail());
-        if (user != null) {
-            String hashedPassword = hashPassword(loginDto.getPassword(), user.getSalt(), PEPPER);
-
-            if (hashedPassword.equals(user.getPassword())) {
-                return new LoginResponse("Login Success", true);
-            } else {
-                return new LoginResponse("Login Failed", false);
-            }
-        } else {
-            return new LoginResponse("User not found.", false);
-        }
-    }
 
 
     private String generateSalt() {
@@ -82,7 +53,70 @@ public class UserServiceImpl implements  UserService {
     private String hashPassword(String password, String salt, String pepper) {
         String combinedValue = pepper + password + salt;
         // Implement hashing logic (e.g., using BCrypt)
-
         return combinedValue;
+    }
+
+    public long countRegisteredUsers() {
+        return userRepository.count();
+    }
+
+    @Override
+    public LocalDateTime getRegistrationDatetime(String email) {
+        User user = userRepository.findByEmail(email);
+        if (user != null) {
+            return user.getRegistrationDatetime();
+        }
+        return null; // User not found
+    }
+
+    @Override
+    public void updateLastLoginTime(String email) {
+        User user = userRepository.findByEmail(email);
+        if (user != null) {
+            LoginInfo loginInfo = loginRepository.findByEmail(email);
+            if (loginInfo == null) {
+                loginInfo = new LoginInfo();
+                loginInfo.setEmail(email);
+            }
+            loginInfo.setLastLoginTime(LocalDateTime.now());
+            loginRepository.save(loginInfo);
+        }
+    }
+
+
+    @Override
+    public String addUser(UserDto userDto) {
+        String salt = generateSalt();
+        String hashedPassword = hashPassword(userDto.getPassword(), salt, PEPPER);
+
+        User user = new User(
+                userDto.getUserId(),
+                userDto.getUserName(),
+                userDto.getEmail(),
+                hashedPassword,
+                userDto.isStatus(),
+                salt,
+                LocalDateTime.now()
+        );
+
+        userRepository.save(user);
+     //   String otp= MyOTPgen.generateOTP();
+        return "Registration successful!";
+    }
+
+    @Override
+    public LoginResponse loginUser(LoginDto loginDto) {
+        User user = userRepository.findByEmail(loginDto.getEmail());
+        if (user != null) {
+            String hashedPassword = hashPassword(loginDto.getPassword(), user.getSalt(), PEPPER);
+            if (hashedPassword.equals(user.getPassword())) {
+                updateLastLoginTime(loginDto.getEmail());
+                return new LoginResponse("Login Success", true);
+            } else {
+                return new LoginResponse("Login Failed", false);
+            }
+        } else {
+            return new LoginResponse("User not found.", false);
+        }
     }
 }

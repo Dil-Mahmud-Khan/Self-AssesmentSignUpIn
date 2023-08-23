@@ -1,11 +1,11 @@
 package com.sign.model;
 
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.sign.Dto.LoginInfo;
+import jakarta.persistence.*;
 import lombok.*;
+
+import java.time.LocalDateTime;
 
 @Entity
 @Setter
@@ -23,4 +23,6 @@ public class User {
     private String password;
     private boolean status;
     private String salt;
+    @Column(name="registration_datetime")
+    private LocalDateTime registrationDatetime;
 }
