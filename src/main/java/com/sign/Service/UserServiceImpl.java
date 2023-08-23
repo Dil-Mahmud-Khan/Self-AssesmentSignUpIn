@@ -15,85 +15,56 @@ import java.util.Base64;
 @Service
 public class UserServiceImpl implements  UserService {
 
-//    @Autowired
-//    private UserRepository userRepository;
-//
-//
-//    public PasswordEncoder passwordEncoder(){
-//        return new BCryptPasswordEncoder();
-//    }
-// //   private  PasswordEncoder passwordEncoder;
-//
-//    @Override
-//    public String addUser(UserDto userDto) {
-//       User user= new User(
-//               userDto.getUserId(),
-//               userDto.getUserName(),
-//               userDto.getEmail(),
-//              passwordEncoder().encode(userDto.getPassword()
-//               ), userDto.isStatus()
-//       );
-//       userRepository.save(user);
-//       return "inserted";
-//    }
-//
-//    @Override
-//    public LoginResponse loginUser(LoginDto loginDto) {
-//        String msg = "";
-//        User user1 = userRepository.findByEmail(loginDto.getEmail());
-//        if (user1 != null) {
-//            String password = loginDto.getPassword();
-//            String encodedPassword = user1.getPassword();
-//            Boolean isPwdRight = passwordEncoder().matches(password, encodedPassword);
-//            if (isPwdRight) {
-//                Optional<User> user = userRepository.findOneByEmailAndPassword(loginDto.getEmail(), encodedPassword);
-//                if (user.isPresent()) {
-//                    return new LoginResponse("Login Success", true);
-//                } else {
-//                    return new LoginResponse("Login Failed", false);
-//                }
-//            } else {
-//
-//                return new LoginResponse("password Not Match", false);
-//            }
-//        }else {
-//            return new LoginResponse("Email not exits!", false);
-//        }
-//
-//    }
+    @Autowired
+    private UserRepository userRepository;
 
-        @Autowired
-        private UserRepository userRepository;
-         private static final String SECRET_PEPPER = "dil";
 
-        @Override
-        public String addUser(UserDto userDto) {
-            String salt = generateSalt();
-            String hashedPassword = hashPassword(userDto.getPassword(), salt);
+    private static final String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    private static final SecureRandom RANDOM = new SecureRandom();
 
-            User user = new User(
-                    userDto.getUserId(),
-                    userDto.getUserName(),
-                    userDto.getEmail(),
-                    hashedPassword,
-                    userDto.isStatus(),
-                    salt);
+    public static String generateRandomString(int length) {
+        StringBuilder randomString = new StringBuilder(length);
 
-            userRepository.save(user);
-            return "Registration successful!";
+        for (int i = 0; i < length; i++) {
+            int randomIndex = RANDOM.nextInt(CHARACTERS.length());
+            char randomChar = CHARACTERS.charAt(randomIndex);
+            randomString.append(randomChar);
         }
 
+        return randomString.toString();
+    }
+        String randomString = generateRandomString(16);
 
-        @Override
-        public LoginResponse loginUser(LoginDto loginDto) {
+    private static final String PEPPER = generateRandomString(16);
+
+    @Override
+    public String addUser(UserDto userDto) {
+        String salt = generateSalt();
+        String hashedPassword = hashPassword(userDto.getPassword(), salt, PEPPER);
+
+        User user = new User(
+                userDto.getUserId(),
+                userDto.getUserName(),
+                userDto.getEmail(),
+                hashedPassword,
+                userDto.isStatus(),
+                salt);
+
+        userRepository.save(user);
+        return "Registration successful!";
+    }
+
+
+    @Override
+    public LoginResponse loginUser(LoginDto loginDto) {
         User user = userRepository.findByEmail(loginDto.getEmail());
         if (user != null) {
-            String hashedPasswordInput = hashPassword(loginDto.getPassword(),user.getSalt());
+            String hashedPassword = hashPassword(loginDto.getPassword(), user.getSalt(), PEPPER);
 
-            if (BCrypt.checkpw(hashedPasswordInput, loginDto.getPassword())) {
-                return new LoginResponse("Login successful!", true);
+            if (hashedPassword.equals(user.getPassword())) {
+                return new LoginResponse("Login Success", true);
             } else {
-                return new LoginResponse("Invalid credentials.", false);
+                return new LoginResponse("Login Failed", false);
             }
         } else {
             return new LoginResponse("User not found.", false);
@@ -102,14 +73,16 @@ public class UserServiceImpl implements  UserService {
 
 
     private String generateSalt() {
-            SecureRandom random = new SecureRandom();
-            byte[] saltBytes = new byte[16]; // 16 bytes for salt
-            random.nextBytes(saltBytes);
-            return Base64.getEncoder().encodeToString(saltBytes);
-        }
-
-        private String hashPassword(String password, String salt) {
-            String combinedValue = SECRET_PEPPER + password + salt;
-            return BCrypt.hashpw(combinedValue, BCrypt.gensalt());
-        }
+        SecureRandom random = new SecureRandom();
+        byte[] saltBytes = new byte[16]; // 16 bytes for salt
+        random.nextBytes(saltBytes);
+        return Base64.getEncoder().encodeToString(saltBytes);
     }
+
+    private String hashPassword(String password, String salt, String pepper) {
+        String combinedValue = pepper + password + salt;
+        // Implement hashing logic (e.g., using BCrypt)
+
+        return combinedValue;
+    }
+}
