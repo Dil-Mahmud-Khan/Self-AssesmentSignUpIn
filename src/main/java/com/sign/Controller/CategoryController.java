@@ -31,10 +31,16 @@ public class CategoryController {
             return ResponseEntity.badRequest().body("Category name already exists.");
         }
     }
-
     @DeleteMapping("/delete/{id}")
-    public void DeleteCategory(@PathVariable Integer id){
-        categoryService.deleteCategory(id);
+    public ResponseEntity<Void> deleteCategory(@PathVariable("id")int id) {
+        try {
+            this.categoryService.deleteCategory(id);
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        } catch (Exception e) {
+            // TODO: handle exception
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 
     @GetMapping("/get")
