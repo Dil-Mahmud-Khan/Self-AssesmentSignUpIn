@@ -6,10 +6,12 @@ import com.sign.model.Category;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @CrossOrigin("http://localhost:3000")
@@ -36,17 +38,6 @@ public class CategoryController {
     public ResponseEntity deleteCategory(@PathVariable("id") int id) {
 
         return  categoryService.deleteCategory(id);
-
-//        try {
-//            this.categoryService.deleteCategory(id);
-//            return ResponseEntity.status(HttpStatus.OK).build();
-//        } catch (CategoryDeletionException ex) {
-//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
-//        } catch (Exception ex) {
-//            // Handle other exceptions
-//            ex.printStackTrace();
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-//        }
     }
 
 
@@ -56,4 +47,6 @@ public class CategoryController {
                 categoryService.getCategories(),HttpStatus.FOUND
         );
     }
+
+
 }

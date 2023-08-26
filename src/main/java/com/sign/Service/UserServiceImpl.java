@@ -12,7 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Base64;
 
 @Service
@@ -118,5 +120,16 @@ public class UserServiceImpl implements  UserService {
         } else {
             return new LoginResponse("User not found.", false);
         }
+    }
+
+
+    public long countLoginsInDay(LocalDate date) {
+        LocalDateTime startOfDay = date.atStartOfDay();
+        LocalDateTime endOfDay = date.atTime(LocalTime.MAX);
+        return loginRepository.countByLastLoginTimeBetween(startOfDay, endOfDay);
+    }
+
+    public LoginInfo findLoginByEmail(String email) {
+        return loginRepository.findByEmail(email);
     }
 }
