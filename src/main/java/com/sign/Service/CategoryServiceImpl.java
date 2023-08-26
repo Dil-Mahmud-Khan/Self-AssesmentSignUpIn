@@ -1,7 +1,7 @@
 package com.sign.Service;
 
 import com.sign.Repository.CategoryRepository;
-import com.sign.exception.CategoryAlreadyExists;
+import com.sign.exception.CategoryDeletionException;
 import com.sign.model.Category;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,7 +25,11 @@ public class CategoryServiceImpl implements CategoryService{
 
     @Override
     public void deleteCategory(Integer id) {
-        categoryRepository.deleteById(id);
+        try {
+            categoryRepository.deleteById(id);
+        } catch (Exception e) {
+            throw new CategoryDeletionException("Error while deleting category: " + e.getMessage());
+        }
     }
 
 }
