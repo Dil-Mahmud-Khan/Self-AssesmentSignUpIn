@@ -53,11 +53,6 @@ public class EmployeeController {
 //        return ResponseEntity.ok(userCount);
 //    }
 
-//    @PostMapping("/otpsubmit")
-//    public String otpSubmit(@RequestParam("otp")String otp, @RequestParam("genOtp")String genOtp, Model model) {
-//        System.out.println("Verification: "+(otp==genOtp));
-//        return "Perfect";
-//
-//    }
+
 
 }
