@@ -1,9 +1,13 @@
 package com.sign.Service;
 
 import com.sign.Repository.CategoryRepository;
-import com.sign.exception.CategoryDeletionException;
+import com.sign.exception.CategoryNotFoundException;
 import com.sign.model.Category;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -24,12 +28,22 @@ public class CategoryServiceImpl implements CategoryService{
     }
 
     @Override
-    public void deleteCategory(Integer id) {
-        try {
-            categoryRepository.deleteById(id);
-        } catch (Exception e) {
-            throw new CategoryDeletionException("Error while deleting category: " + e.getMessage());
-        }
-    }
+    public ResponseEntity deleteCategory(Integer id) {
 
+
+        try {
+
+            categoryRepository.findById(id).orElseThrow(() -> new CategoryNotFoundException("Category not found with ID: " + id));
+
+//            Category category = categoryRepository.findById(id)
+//                    .orElseThrow(() -> new CategoryNotFoundException("Category not found with ID: " + id));
+            System.out.println("In try block");
+            categoryRepository.deleteById(id);
+            return ResponseEntity.ok("Category deleted successfully.");
+        } catch (Exception e) {
+            System.out.println("In catch block");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Not found!");
+        }
+
+    }
 }

@@ -31,28 +31,22 @@ public class CategoryController {
             return ResponseEntity.badRequest().body("Category name already exists.");
         }
     }
-//    @DeleteMapping("/delete/{id}")
-//    public ResponseEntity<Void> deleteCategory(@PathVariable("id")int id) {
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity deleteCategory(@PathVariable("id") int id) {
+
+        return  categoryService.deleteCategory(id);
+
 //        try {
 //            this.categoryService.deleteCategory(id);
 //            return ResponseEntity.status(HttpStatus.OK).build();
-//        } catch (Exception e) {
-//            throw new CategoryDeletionException("Error while deleting category: " + e.getMessage());
+//        } catch (CategoryDeletionException ex) {
+//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+//        } catch (Exception ex) {
+//            // Handle other exceptions
+//            ex.printStackTrace();
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 //        }
-//    }
-
-    @DeleteMapping("/delete/{id}")
-    public ResponseEntity<String> deleteCategory(@PathVariable("id") int id) {
-        try {
-            this.categoryService.deleteCategory(id);
-            return ResponseEntity.status(HttpStatus.OK).build();
-        } catch (CategoryDeletionException ex) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
-        } catch (Exception ex) {
-            // Handle other exceptions
-            ex.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
     }
 
 
@@ -62,5 +56,4 @@ public class CategoryController {
                 categoryService.getCategories(),HttpStatus.FOUND
         );
     }
-
 }
