@@ -10,8 +10,8 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserDto {
-    private int userId;
-    private String userName;
+    private int id;
+    private String name;
     private String email;
     private String password;
     private boolean status;

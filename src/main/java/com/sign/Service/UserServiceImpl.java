@@ -92,8 +92,8 @@ public class UserServiceImpl implements  UserService {
         String hashedPassword = hashPassword(userDto.getPassword(), salt, PEPPER);
 
         User user = new User(
-                userDto.getUserId(),
-                userDto.getUserName(),
+                userDto.getId(),
+                userDto.getName(),
                 userDto.getEmail(),
                 hashedPassword,
                 userDto.isStatus(),
