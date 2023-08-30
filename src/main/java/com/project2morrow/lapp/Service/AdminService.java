@@ -14,7 +14,7 @@ public interface AdminService {
 
     Optional<Admin> getAdminById(Integer id);
 
-    Admin updateAdmin(Admin admin, Integer id);
+    Admin updateAdmin(Admin admin,Integer id);
 
     void deleteAdmin(Integer id);
 

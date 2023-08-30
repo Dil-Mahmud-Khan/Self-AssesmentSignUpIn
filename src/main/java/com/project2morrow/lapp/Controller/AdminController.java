@@ -14,7 +14,7 @@ import java.util.Optional;
 
 @CrossOrigin()
 @RestController
-@RequestMapping("/api/admin")
+@RequestMapping("api/admin")
 @RequiredArgsConstructor
 public class AdminController {
 
@@ -35,15 +35,15 @@ public class AdminController {
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<Admin> updateAdmin(@RequestBody Admin admin, @PathVariable("id")int id) {
+    public ResponseEntity<Admin> updateAdmin(@RequestBody Admin admin,@PathVariable("id") Integer id) {
         try {
-            this.adminService.updateAdmin(admin,id);
+          //  Admin adminRes=
+            adminService.updateAdmin(admin,id);
             return ResponseEntity.ok().body(admin);
         } catch (Exception e) {
             // TODO: handle exception
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-
         }
     }
 
@@ -54,7 +54,6 @@ public class AdminController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
         return ResponseEntity.of(Optional.of(list));
-
     }
 
     @GetMapping("/getadmin/{id}")
@@ -62,7 +61,6 @@ public class AdminController {
         Optional<Admin> admin=adminService.getAdminById(id);
         if(admin==null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-
         }
         return ResponseEntity.of(Optional.of(admin));
     }
@@ -77,5 +75,4 @@ public class AdminController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
    }
-
 }

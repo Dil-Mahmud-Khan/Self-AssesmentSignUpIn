@@ -16,6 +16,8 @@ import java.util.Optional;
 public class AdminServiceImpl implements AdminService{
     @Autowired
     private AdminRepository adminRepository;
+    
+    
     private AdminDto adminDto;
 
     private static final String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
@@ -86,7 +88,7 @@ public class AdminServiceImpl implements AdminService{
     }
 
     @Override
-    public Admin updateAdmin(Admin admin, Integer id) {
+    public Admin updateAdmin(Admin admin,Integer id) {
         admin.setId(id);
         return adminRepository.save(admin);
     }
