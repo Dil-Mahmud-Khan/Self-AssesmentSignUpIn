@@ -9,7 +9,7 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.sign</groupId>
-    <artifactId>SignUpSignInModule</artifactId>
+    <artifactId>LAPP</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>SignUpSignInModule</name>
     <description>SignUpSignInModule</description>
