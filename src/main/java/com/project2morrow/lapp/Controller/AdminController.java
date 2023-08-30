@@ -9,7 +9,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,31 +23,59 @@ public class AdminController {
 
 
     @PostMapping("/add")
-    public String AddAdmin(@RequestBody AdminDto adminDto){
-       return adminService.addAdmin(adminDto);
+    public ResponseEntity<String> AddAdmin(@RequestBody AdminDto adminDto){
+        String b=null;
+        try {
+            b=this.adminService.addAdmin(adminDto);
+            return ResponseEntity.of(Optional.of(b));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 
     @PutMapping("/update/{id}")
-    public Admin UpdateAdmin(@RequestBody Admin admin, @PathVariable Integer id){
-        return adminService.updateAdmin(admin,id);
+    public ResponseEntity<Admin> updateAdmin(@RequestBody Admin admin, @PathVariable("id")int id) {
+        try {
+            this.adminService.updateAdmin(admin,id);
+            return ResponseEntity.ok().body(admin);
+        } catch (Exception e) {
+            // TODO: handle exception
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+
+        }
     }
 
     @GetMapping("/getadmins")
     public ResponseEntity<List<Admin>> getAdmins(){
-        return new ResponseEntity<>(
-            adminService.getAdmins(), HttpStatus.FOUND
-        );
+        List<Admin> list=adminService.getAdmins();
+        if(list.size()<=0) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+        return ResponseEntity.of(Optional.of(list));
+
     }
 
     @GetMapping("/getadmin/{id}")
-    public Optional<Admin> getAdminById(@PathVariable  Integer id) {
-        return adminService.getAdminById(id);
+    public ResponseEntity<Optional<Admin>> getAdmin(@PathVariable("id") int id) {
+        Optional<Admin> admin=adminService.getAdminById(id);
+        if(admin==null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+
+        }
+        return ResponseEntity.of(Optional.of(admin));
     }
 
-    @DeleteMapping("/delete/{id}")
-    public void DeleteAdmin(@PathVariable Integer id){
-        adminService.deleteAdmin(id);
-    }
-
+   @DeleteMapping("delete/{id}")
+    public ResponseEntity<Void>DeleteAdmin(@PathVariable Integer id){
+        try
+        {
+            this.adminService.deleteAdmin(id);
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+   }
 
 }
