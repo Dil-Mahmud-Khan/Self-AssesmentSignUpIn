@@ -21,6 +21,7 @@ public class AdminController {
     @Autowired
     AdminService adminService;
 
+//Nothing added
 
     @PostMapping("/add")
     public ResponseEntity<String> AddAdmin(@RequestBody AdminDto adminDto){
